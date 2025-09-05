@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Vazirmatn:wght@100..900&display=swap');
+
+@import "tailwindcss";
+
+* {
+    font-family: "Outfit", sans-serif;
+    @apply max-sm:[&::-webkit-scrollbar]:hidden
+}
+
+/* ::-webkit-scrollbar {
+    display: none;
+
+} */
+
+::-webkit-scrollbar {
+    width: 6px;
+    
+}
+
+::-webkit-scrollbar-track {
+    background: #ffffff3a;
+    border-radius: 20%;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 20%;
+    background: linear-gradient(to right, #7018eb, #5403c5);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to right, #5607c5, #35027d);
+}
