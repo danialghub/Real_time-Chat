@@ -32,7 +32,7 @@ const RightSidebar = () => {
 
       <div className='px-5 text-xs'>
         <p className=''>Media</p>
-        <div className='mt-2 max-h-[250px] overflow-y-scroll grid grid-cols-2 gap-4 opacity-80  '>
+        <div className='mt-2 max-h-[250px] overflow-y-auto grid grid-cols-2 gap-4 opacity-80  '>
           {msgImages.map((url, idx) => (
             <div
               className='cursor-pointer rounded'

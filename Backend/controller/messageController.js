@@ -1,26 +1,31 @@
 
 // get All users except the logged users
+import mongoose from 'mongoose'
 import cloudinary from '../lib/cloudinary.js'
 import Message from "../models/Message.js"
-import User from "../models/User.js"
+import User from '../models/User.js'
 import { io, userSocketMap } from '../server.js'
 
 export const getUsersForSidebar = async (req, res) => {
     try {
         const userId = req.user._id
-       
 
-        const filteredUsers = await User.find({ _id: { $ne: userId } }).select('-password')
+        const filteredUsers = await User.findById(userId)
+            .populate('friends', 'fullName email bio profilePic')
+            .exec()
+
+
+
         //count number of messages not seen
         const unseenMessages = {}
-        const promises = filteredUsers.map(async (user) => {
+        const promises = filteredUsers.friends.map(async (user) => {
             const messages = await Message.find({ senderId: user._id, receiverId: userId, seen: false })
             if (messages.length > 0) {
                 unseenMessages[user._id] = messages.length
             }
         })
         await Promise.all(promises)
-        res.json({ success: true, user: filteredUsers, unseenMessages })
+        res.json({ success: true, users: filteredUsers.friends, unseenMessages })
 
 
 
@@ -28,6 +33,7 @@ export const getUsersForSidebar = async (req, res) => {
         res.json({ success: true, message: error.message })
     }
 }
+
 //Get all messages for selected user
 export const getMessages = async (req, res) => {
     try {
@@ -52,7 +58,6 @@ export const getMessages = async (req, res) => {
 export const markMessageAsSeen = async (req, res) => {
     try {
         const { id } = req.params
-        console.log(id);
 
         await Message.findByIdAndUpdate(id, { seen: true })
         res.json({ success: true })
@@ -68,6 +73,13 @@ export const sendMessage = async (req, res) => {
         const receiverId = req.params.id
         const senderId = req.user._id
 
+
+        const AreFriends = await User.findById(senderId)
+
+
+        if (!AreFriends.friends.includes(receiverId)) {
+            return res.json({ success: false, message: "ابتدا درخواست دوستی دهید" })
+        }
         let imageUrl;
         if (image) {
             const uploadedImage = await cloudinary.uploader.upload(image)

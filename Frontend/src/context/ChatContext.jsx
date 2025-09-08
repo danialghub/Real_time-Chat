@@ -18,8 +18,10 @@ const ChatProvider = ({ children }) => {
         try {
             const { data } = await axios.get('/api/messages/users');
             if (data.success) {
-                setUsers(data.user)
+                setUsers(data.users)
                 setUnseenMessages(data.unseenMessages)
+                
+
             }
 
 
@@ -33,7 +35,7 @@ const ChatProvider = ({ children }) => {
             const { data } = await axios.get(`/api/messages/${userId}`)
             if (data.success) {
                 setMessages(data.messages)
-                
+
             }
         } catch (error) {
             toast.error(error.message)
@@ -60,9 +62,7 @@ const ChatProvider = ({ children }) => {
     const subscribeToMessages = async () => {
         if (!socket) return
 
-
         socket.on('newMessage', (newMessage) => {
-            console.log(newMessage);
             if (selectedUser && newMessage.senderId === selectedUser._id) {
                 newMessage.seen = true
                 setMessages(prev => [...prev, newMessage])

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { createContext } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
@@ -12,7 +12,6 @@ export const AuthContext = createContext()
 const AuthProvider = ({ children }) => {
 
     const [token, setToken] = useState(localStorage.getItem('token'))
-    console.log(localStorage.getItem('token'));
 
     const [authUser, setAuthUser] = useState(null)
     const [onlineUser, setOnlineUser] = useState([])
@@ -36,7 +35,6 @@ const AuthProvider = ({ children }) => {
     const login = async (state, credentials) => {
         try {
             const { data } = await axios.post(`/api/auth/${state}`, credentials)
-   
 
             if (data.success) {
                 setAuthUser(data.userData)
@@ -48,8 +46,6 @@ const AuthProvider = ({ children }) => {
             } else {
                 toast.error(data.message)
             }
-
-
         } catch (error) {
             toast.error(error.message)
         }
@@ -61,6 +57,7 @@ const AuthProvider = ({ children }) => {
         setToken(null)
         setAuthUser(null)
         setOnlineUser([])
+        location.reload()
         axios.defaults.headers.common['token'] = null
         toast.success('Logged out successfully')
         socket.disconnect()
@@ -94,6 +91,8 @@ const AuthProvider = ({ children }) => {
         newSocket.connect()
         setSocket(newSocket)
         newSocket.on("getOnlineUsers", (userIds) => {
+            console.log(userIds);
+
             setOnlineUser(userIds)
         })
     }

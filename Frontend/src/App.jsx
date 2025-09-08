@@ -1,4 +1,3 @@
-import React from 'react'
 import Router from './routes'
 import { Toaster } from 'react-hot-toast'
 const App = () => {
@@ -6,6 +5,7 @@ const App = () => {
     <div className='bg-[url("/bgImage.svg")] bg-contain  '>
       <Toaster />
       <Router />
+      
     </div>
   )
 }
