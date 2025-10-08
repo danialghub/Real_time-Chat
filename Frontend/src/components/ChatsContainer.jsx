@@ -66,7 +66,7 @@ const [showEmojiPicker,setShowEmojiPicker] = useState(false)
         <div className='h-full overflow-y-hidden max-sm:relative backdrop-blur-lg '>
 
             {/* header */}
-            <div className='flex items-center gap-3 py-3 mx-4 border-b border-stone-500 '>
+            <div className='sticky inset-0 top-0 flex items-center gap-3 py-3 mx-4 border-b border-stone-500 '>
                 <img src={selectedUser.profilePic || assets.avatar_icon} alt="" className='w-8 rounded-full' />
                 <p className='flex-1 text-lg text-white flex items-center gap-2'>
                     {selectedUser.fullName}
@@ -116,7 +116,7 @@ const [showEmojiPicker,setShowEmojiPicker] = useState(false)
                         <div ref={scrollEnd}></div>
                     </div>
                     {/* bottom area */}
-                    <div className='absolute bottom-0 left-0 right-0 flex items-center  p-3'>
+                    <div className='sticky inset-0 bottom-0 flex items-center  p-3'>
                         
                         <div className='flex-1 flex items-center bg-gray-100/12 px-3 rounded-full'>
                         
