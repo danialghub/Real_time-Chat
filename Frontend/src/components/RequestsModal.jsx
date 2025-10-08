@@ -12,11 +12,12 @@ import axios from 'axios';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { FaCheck } from "react-icons/fa";
+
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const Modal = ({ open, setOpen, requests, setRequests, getUsers }) => {
+const RequestsModal = ({ open, setOpen, requests, setRequests, getUsers }) => {
 
 
     const getRequests = async () => {
@@ -128,4 +129,4 @@ const Modal = ({ open, setOpen, requests, setRequests, getUsers }) => {
         </>
     );
 }
-export default Modal
+export default RequestsModal

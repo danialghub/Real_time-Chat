@@ -5,8 +5,9 @@ import { AuthContext } from '../context/AuthContext'
 import { ChatContext } from '../context/ChatContext'
 import ImageModal from './ImageModal'
 import toast from 'react-hot-toast'
-
+import EmojiPicker from 'emoji-picker-react';
 import axios from 'axios'
+import { MdOutlineEmojiEmotions } from "react-icons/md";
 const ChatContainer = () => {
 
 
@@ -18,7 +19,7 @@ const ChatContainer = () => {
     const scrollEnd = useRef(null)
     const [input, setInput] = useState('')
 
-
+const [showEmojiPicker,setShowEmojiPicker] = useState(false)
    
 
     //handle sending a message
@@ -79,10 +80,19 @@ const ChatContainer = () => {
                     className='md:hidden max-w-7' />
 
             </div>
-            
+             
+                            <div className='absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2'>
+                                 <EmojiPicker 
+                                 width={300}
+                                 height={400}
+                                 open={showEmojiPicker} 
+                                 onEmojiClick={({emoji})=>setInput(prev=>prev+emoji)}/>
+                            </div>
+                         
 
                     {/* chat area */}
                     <div className='flex flex-col h-[calc(100%-120px)] overflow-y-auto p-3 pb-6 '>
+                        
                         {isShowModal && <ImageModal imageUrl={imageUrl} setIsShowModal={setIsShowModal} />}
                         {messages.map((message, idx) => (
                             <div key={idx} className={`flex items-end gap-2 justify-end ${message.senderId !== authUser._id && 'flex-row-reverse'}`}>
@@ -106,8 +116,10 @@ const ChatContainer = () => {
                         <div ref={scrollEnd}></div>
                     </div>
                     {/* bottom area */}
-                    <div className='absolute bottom-0 left-0 right-0 flex items-center gap-3 p-3'>
+                    <div className='absolute bottom-0 left-0 right-0 flex items-center  p-3'>
+                        
                         <div className='flex-1 flex items-center bg-gray-100/12 px-3 rounded-full'>
+                        
                             <input
                                 onChange={e => setInput(e.target.value)}
                                 value={input}
@@ -121,6 +133,12 @@ const ChatContainer = () => {
                             <label htmlFor="image">
                                 <img src={assets.gallery_icon} alt="" className='w-5 mr-2 cursor-pointer' />
                             </label>
+                            
+                             <MdOutlineEmojiEmotions
+                             color='white' 
+                             fontSize={25}
+                             cursor='pointer'
+                             onClick={()=>setShowEmojiPicker(prev=>!prev)}/>
                         </div>
                         <img
                             onClick={handleSendMessage}

@@ -6,7 +6,7 @@ import { ChatContext } from '../context/ChatContext'
 import Badge from '@mui/material/Badge'
 import { IoMdMail } from "react-icons/io";
 import { MdPersonSearch } from "react-icons/md";
-import Modal from './Modal'
+import RequestsModal from './RequestsModal'
 import FriendRequest from './FriendRequest'
 
 
@@ -30,7 +30,7 @@ const Sidebar = () => {
     return (
         <div className={`bg-[#8185B2]/10 h-full p-3 py-5 rounded-r-xl  text-white ${selectedUser ? "max-md:hidden" : ""} `}>
             {/* shows all requests */}
-            <Modal open={open} setOpen={setOpen} requests={requests} setRequests={setRequests} getUsers={getUsers} />
+            <RequestsModal open={open} setOpen={setOpen} requests={requests} setRequests={setRequests} getUsers={getUsers} />
             <FriendRequest open={seachFriend} setOpen={setSeachFriend} />
             <div className='pb-5'>
                 <div className='flex justify-between items-center'>
@@ -51,9 +51,9 @@ const Sidebar = () => {
                             <IoMdMail fontSize={20} />
                         </Badge>
 
-                        <div className='relative py-2 group '>
+                        <div className='relative py-2 group ' tabIndex={0}>
                             <img src={assets.menu_icon} alt="Menu" className='max-h-4 cursor-pointer' />
-                            <div className='absolute top-8 right-0 z-20 w-32 p-5 rounded-md bg-[#282142] border border-gray-600 text-gray-100 hidden group-hover:block'>
+                            <div className='absolute top-8 right-0 z-20 w-32 p-5 rounded-md bg-[#282142] border border-gray-600 text-gray-100 hidden group-hover:block group-focus:block'>
                                 <p
                                     onClick={() => navigate('/profile')}
                                     className='cursor-pointer text-sm'>Edit Profile</p>

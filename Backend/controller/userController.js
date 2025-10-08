@@ -70,8 +70,15 @@ export const updateProfile = async (req, res) => {
         if (!profilePic) {
             updateUser = await User.findByIdAndUpdate(userId, { fullName, bio }, { new: true })
         } else {
-            const uploadUrl = await cloudinary.uploader.upload(profilePic)
-            updateUser = await User.findByIdAndUpdate(userId, { fullName, bio, profilePic: uploadUrl.secure_url }, { new: true })
+            const imageUpload = await cloudinary.uploader.upload(profilePic, {
+                transformation: [
+                    { width: 500, crop: 'fill', gravity: 'face' },
+                    { quality: 'auto', fetch_format: "auto" }
+                ]
+            })
+
+
+            updateUser = await User.findByIdAndUpdate(userId, { fullName, bio, profilePic: imageUpload.secure_url }, { new: true })
         }
         res.json({ success: true, user: updateUser })
     } catch (error) {
@@ -143,22 +150,32 @@ export const response2Request = async (req, res) => {
             return res.json({ success: false, message: "درخواستی یافت نشد" });
         }
 
-        if (status == "Accepted") {
-            await User.bulkWrite([
+        switch (status) {
+            case "Accepted":
                 {
-                    updateOne: {
-                        filter: { _id: to },
-                        update: { $addToSet: { friends: from } }
-                    }
-                },
-                {
-                    updateOne: {
-                        filter: { _id: from },
-                        update: { $addToSet: { friends: to } }
-                    }
+                    await User.bulkWrite([
+                        {
+                            updateOne: {
+                                filter: { _id: to },
+                                update: { $addToSet: { friends: from } }
+                            }
+                        },
+                        {
+                            updateOne: {
+                                filter: { _id: from },
+                                update: { $addToSet: { friends: to } }
+                            }
+                        }
+                    ], { session })
+                    break;
                 }
-            ], { session })
+
+            case "Rejected":
+                await FriendRequest.findOneAndDelete({ from, to })
+                break;
+
         }
+
         await session.commitTransaction();
         session.endSession();
 
