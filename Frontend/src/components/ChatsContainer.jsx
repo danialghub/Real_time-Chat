@@ -20,7 +20,7 @@ const ChatContainer = () => {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
     const inputRef = useRef(null)
-
+    const emojiRef = useRef(null)
 
     //handle sending a message
     const handleSendMessage = async (e) => {
@@ -47,15 +47,24 @@ const ChatContainer = () => {
         }
         reader.readAsDataURL(file)
     }
-    const handleEmojiButton = e=>{
-e.preventDefault()
-e.stopPropagation()
-setShowEmojiPicker(prev=>!prev)
-setTimeout(() => inputRef.current?.focus(), 0);
-    
-}
+    const handleEmojiButton = e => {
+        e.preventDefault()
+        e.stopPropagation()
+        setShowEmojiPicker(prev => !prev)
+        setTimeout(() => inputRef.current?.focus(), 0);
+
+    }
 
 
+    useEffect(() => {
+        const handleClickOutSideOfEmoji = (e) => {
+            const emoji = emojiRef.current
+            
+            if (emoji && !emoji.contains(e.target)&& showEmojiPicker) setShowEmojiPicker(prev=>false)
+        }
+        document.addEventListener('mousedown', handleClickOutSideOfEmoji)
+        return () => document.removeEventListener('mousedown', handleClickOutSideOfEmoji)
+    }, [])
     useEffect(() => {
         if (selectedUser) {
             getMessages(selectedUser._id)
@@ -88,10 +97,10 @@ setTimeout(() => inputRef.current?.focus(), 0);
 
             </div>
 
-            <div className='absolute left-1/2 top-1/2 -translate-y-1/2 -translate-x-1/2'>
+            <div className='absolute left-1/2 bottom-20  -translate-x-1/2' ref={emojiRef}>
                 <EmojiPicker
                     width={300}
-                    height={400}
+                    height={350}
                     open={showEmojiPicker}
                     autoFocusSearch={false}
                     onEmojiClick={({ emoji }) => setInput(prev => prev + emoji)} />
@@ -147,7 +156,7 @@ setTimeout(() => inputRef.current?.focus(), 0);
                         color='white'
                         fontSize={25}
                         cursor='pointer'
-                        onClick={handleEmojiButton}/>
+                        onClick={handleEmojiButton} />
                 </div>
                 <img
                     onClick={handleSendMessage}

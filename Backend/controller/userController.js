@@ -93,12 +93,12 @@ export const searchForUsers = async (req, res) => {
         const { input } = req.params
 
         const myId = req.user._id
-
+        if (!input) return res.json({ success: false, message: "متن نامعتبر" })
         const users = await User.find({ fullName: { $regex: input, $options: "i" }, _id: { $ne: myId }, friends: { $ne: myId } }).select('-password -friends')
 
 
         if (!users.length)
-            return res.json({ success: false, message: "کاربری یافت نشد!" })
+            return res.json({ success: false, message: "!کاربری یافت نشد" })
 
         res.json({ success: true, users })
 

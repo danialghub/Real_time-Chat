@@ -13,6 +13,7 @@ export default function FriendRequest({ open, setOpen }) {
     const [input, setInput] = useState('')
     const [searchedUsers, setSearchedUsers] = useState(false)
     const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
     const { axios } = useContext(AuthContext)
     const handleClose = () => {
         setSearchedUsers(false)
@@ -39,7 +40,7 @@ export default function FriendRequest({ open, setOpen }) {
         setError('')
         e.preventDefault();
         try {
-
+            setLoading(true)
             if (input) {
                 const { data } = await axios.get(`/api/auth/search-user/${input}`)
                 if (data.success) {
@@ -51,6 +52,8 @@ export default function FriendRequest({ open, setOpen }) {
             }
         } catch (error) {
             toast.error(error.message)
+        } finally {
+            setLoading(false)
         }
 
     }
@@ -60,7 +63,7 @@ export default function FriendRequest({ open, setOpen }) {
 
             <Dialog open={open} onClose={handleClose} >
 
-                <DialogContent className='bg-slate-900 h-screen max-sm:max-h-[60vh] relative overflow-hidden '>
+                <DialogContent className='bg-slate-900  relative overflow-hidden '>
                     <button
                         onClick={handleClose}
                         className='absolute top-2 right-2 cursor-pointer'>
@@ -79,40 +82,43 @@ export default function FriendRequest({ open, setOpen }) {
                             placeholder='Search User...' />
                         <button
                             type='submit'
-                            className='size-9  bg-blue-600 absolute right-0 top-1/2 -translate-y-1/2 rounded-full flex items-center justify-center cursor-pointer'>
+                            className='size-9  bg-indigo-600 absolute right-0 top-1/2 -translate-y-1/2 rounded-full flex items-center justify-center cursor-pointer'>
                             <img src={assets.search_icon} alt="Search" className='w-4  ' />
                         </button>
 
                     </form>
 
-                    {/* map All users with that name */}
-                    {searchedUsers ? searchedUsers.length ?
-                        <div dir='rtl' className='mt-10 max-h-[69vh] overflow-y-auto w-full'>
-                            {
-                                searchedUsers.map((user, idx) => (
+                    {/* map All users with their name */}
+                    {!loading ?
+                        searchedUsers ? searchedUsers.length ?
+                            <div dir='rtl' className='mt-10 h-[50vh] overflow-y-auto w-full'>
+                                {
+                                    searchedUsers.map((user, idx) => (
 
-                                    <div
-                                        key={idx}
-                                        className='duration-150 rounded ease-in-out cursor-pointer hover:bg-slate-800/30 flex items-center justify-between'>
-                                        <div className='p-2 flex items-center gap-3 text-white'>
+                                        <div
+                                            key={idx}
+                                            className='duration-150 rounded ease-in-out cursor-pointer hover:bg-slate-800/30 flex items-center justify-between'>
+                                            <div className='p-2 flex items-center gap-3 text-white'>
 
-                                            <img src={user.profilePic || assets.avatar_icon} className='w-10 rounded-full' alt="" />
-                                            <span>{user.fullName}</span>
+                                                <img src={user.profilePic || assets.avatar_icon} className='w-10 rounded-full' alt="" />
+                                                <span>{user.fullName}</span>
+                                            </div>
+
+                                            <button
+                                                onClick={() => sendRequest(user._id)}
+                                                title='درخواست دوستی'
+                                                className='px-2 py-2 max-md:text-sm cursor-pointer  bg-purple-700/60 rounded text-white'>
+                                                <IoPersonAddSharp fontSize={20} />
+                                            </button>
+
                                         </div>
-
-                                        <button
-                                            onClick={() => sendRequest(user._id)}
-                                            title='درخواست دوستی'
-                                            className='px-2 py-2 max-md:text-sm cursor-pointer  bg-purple-700/60 rounded text-white'>
-                                            <IoPersonAddSharp fontSize={20} />
-                                        </button>
-
-                                    </div>
-                                ))}
-                        </div>
-                        : <div className='flex items-center justify-center h-5/6 text-xl text-white'>{error}</div>
-
-                        : <div className='flex items-center justify-center h-5/6 text-xl text-white'>Loading...</div>
+                                    ))}
+                            </div>
+                            : <div className='h-[50vh] flex items-center justify-center text-xl text-white'>{error}</div>
+:<div className=' text-md text-white py-10'>
+    نام دوست خود را  جهت درخواست جستجو کنید
+</div>
+                        : <div className='h-[50vh] flex items-center justify-center text-xl text-white'>Loading...</div>
                     }
                 </DialogContent>
 

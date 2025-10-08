@@ -13,7 +13,7 @@ import FriendRequest from './FriendRequest'
 const Sidebar = () => {
 
     const navigate = useNavigate()
-    const { getUsers, users, selectedUser, setSelectedUser, setUnseenMessages, unseenMessages } = useContext(ChatContext)
+    const { getUsers,setMessages, users, selectedUser, setSelectedUser, setUnseenMessages, unseenMessages } = useContext(ChatContext)
     const { logout, onlineUser } = useContext(AuthContext)
     const [input, setInput] = useState('')
     const [open, setOpen] = useState(false);
@@ -78,7 +78,9 @@ const Sidebar = () => {
                 {filteredUsers.map((user, idx) => (
                     <div
                         onClick={() => {
-                            setSelectedUser(user); setUnseenMessages(prev =>
+                            setSelectedUser(user);
+                            setMessages([])
+                            setUnseenMessages(prev =>
                                 ({ ...prev, [user._id]: 0 }))
                         }}
                         key={idx}
